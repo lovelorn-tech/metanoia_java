@@ -9,11 +9,14 @@ import Modules.Auth.Models.*;
 // VO
 import Modules.Auth.VO.User.*;
 
+// Exceptions
+import Modules.Core.Models.CustomException;
+
 // Interfaces
 import Modules.Core.Repositories.interfaces.IGenericRepository;
 
 public interface IUserRepository extends IGenericRepository<User> {
-    Optional<User> getByCredentials(UserUsernameVO username, UserPasswordVO password);
-    Optional<User> getByUsernameOrEmail(UserUsernameVO username, UserEmailVO email);
-    List<User> getByProfile(Profile profile);
+    Optional<User> getByCredentials(UserUsernameVO username, UserPasswordVO password) throws CustomException;
+    Optional<User> getByUsernameOrEmail(UserUsernameVO username, UserEmailVO email) throws CustomException;
+    List<User> getByProfile(Profile profile) throws CustomException;
 }

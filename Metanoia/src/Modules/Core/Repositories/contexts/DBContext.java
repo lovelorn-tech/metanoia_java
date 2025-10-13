@@ -2,7 +2,10 @@ package Modules.Core.Repositories.contexts;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 import java.util.Optional;
 
 import Modules.Core.Models.CustomException;
@@ -45,10 +48,24 @@ public class DBContext implements IDBContext {
     }
 
     @Override
-    public void executeQuery(String SP) throws CustomException {
+    public List<Object> executeQuery(String SP) throws CustomException {
         try {
             this.open();
             Connection con = this.conn.get();
+            Statement stm = con.createStatement();
+            ResultSet rs = stm.executeQuery(SP);
+            List<Object> o = List.of();
+            while (rs.next()) {
+                
+            }
+            return o;
+        } catch (SQLException ex) {
+            throw new CustomException(
+                    500,
+                    "executeQuery",
+                    "DBContext",
+                    Optional.of(ex.getMessage()),
+                    Optional.of(null));
         } catch (Exception ex) {
             if (ex instanceof CustomException)
                 throw ex;
