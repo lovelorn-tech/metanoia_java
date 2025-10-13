@@ -1,4 +1,4 @@
-package Modules.Auth.Repositories.contexts;
+package Modules.Core.Repositories.contexts;
 
 import Modules.Core.Models.CustomException;
 

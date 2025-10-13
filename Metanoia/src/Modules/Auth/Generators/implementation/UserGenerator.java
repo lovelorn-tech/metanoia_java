@@ -24,12 +24,12 @@ import Modules.Core.VO.UpdatedVO;
 
 public class UserGenerator implements IUserGenerator {
     
-    private static Optional<UserGenerator> instance = null;
+    private static Optional<UserGenerator> instance = Optional.of(null);
 
     private UserGenerator(){}
 
     public static UserGenerator getInstance() {
-        if (UserGenerator.instance == null){
+        if (UserGenerator.instance.isEmpty()){
             UserGenerator.instance = Optional.of(new UserGenerator());
         }
         return UserGenerator.instance.get();

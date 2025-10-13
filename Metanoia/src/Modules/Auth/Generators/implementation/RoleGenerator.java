@@ -13,13 +13,13 @@ import Modules.Core.VO.UpdatedVO;
 
 public class RoleGenerator {
 
-    private static Optional<RoleGenerator> instance = null;
+    private static Optional<RoleGenerator> instance = Optional.of(null);
 
     private RoleGenerator() {
     }
 
     public static RoleGenerator getInstance() {
-        if (RoleGenerator.instance == null) {
+        if (RoleGenerator.instance.isEmpty()) {
             RoleGenerator.instance = Optional.of(new RoleGenerator());
         }
         return RoleGenerator.instance.get();

@@ -1,4 +1,4 @@
-package Modules.Auth.Repositories.contexts;
+package Modules.Core.Repositories.contexts;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,7 +8,7 @@ import java.util.Optional;
 import Modules.Core.Models.CustomException;
 
 public class DBContext implements IDBContext {
-    private static Optional<DBContext> ctx = null;
+    private static Optional<DBContext> ctx = Optional.of(null);
     private final String connectionString = "";
     private Optional<Connection> conn = Optional.of(null);
 
@@ -16,7 +16,7 @@ public class DBContext implements IDBContext {
     };
 
     public static DBContext getInstance() {
-        if (DBContext.ctx == null) {
+        if (DBContext.ctx.isEmpty()) {
             DBContext.ctx = Optional.of(new DBContext());
         }
         return DBContext.ctx.get();

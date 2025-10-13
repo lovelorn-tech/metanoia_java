@@ -14,12 +14,12 @@ import Modules.Core.VO.UpdatedVO;
 
 public class ProfileGenerator implements IProfileGenerator {
     
-    private static Optional<ProfileGenerator> instance = null;
+    private static Optional<ProfileGenerator> instance = Optional.of(null);
 
     private ProfileGenerator() {}
 
     public static ProfileGenerator getInstance() {
-        if (ProfileGenerator.instance == null) {
+        if (ProfileGenerator.instance.isEmpty()) {
             ProfileGenerator.instance = Optional.of(new ProfileGenerator());
         }
         return ProfileGenerator.instance.get();
