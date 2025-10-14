@@ -1,10 +1,10 @@
 package Modules.Core.Repositories.contexts;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,15 +53,32 @@ public class DBContext implements IDBContext {
         try {
             this.open();
             Connection con = this.conn.get();
-            Statement stm = con.createStatement();
-            ResultSet rs = stm.executeQuery(SP);
+            CallableStatement cs = con.prepareCall("{ CALL " + SP + " }");
+            //TODO:  Add sql parameters here
+            cs.execute();
             List<Row> rows = List.of();
-            while (rs.next()) {
-                Row row = new Row(rs);
-                rows.add(row);
+            ResultSet rs = cs.getResultSet();
+            if (rs != null) {
+                while (rs.next()) {
+                    Row row = new Row(rs);
+                    rows.add(row);
+                }
+                rs.close();
             }
+            cs.close();
+            con.close();
             return rows;
         } catch (SQLException ex) {
+            try {
+                this.conn.get().rollback();
+            } catch (SQLException e) {
+                throw new CustomException(
+                        500,
+                        "executeQuery",
+                        "DBContext",
+                        Optional.of(ex.getMessage()),
+                        Optional.of(null));
+            }
             throw new CustomException(
                     500,
                     "executeQuery",
@@ -78,19 +95,6 @@ public class DBContext implements IDBContext {
                         "DBContext",
                         Optional.of(ex.getMessage()),
                         Optional.of(null));
-        } finally {
-            if (this.conn.isPresent()) {
-                try {
-                    this.conn.get().close();
-                } catch (SQLException ex) {
-                    throw new CustomException(
-                            500,
-                            "executeQuery",
-                            "DBContext",
-                            Optional.of(ex.getMessage()),
-                            Optional.of(null));
-                }
-            }
         }
     }
 
