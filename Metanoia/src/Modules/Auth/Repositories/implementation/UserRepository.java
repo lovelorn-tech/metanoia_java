@@ -9,6 +9,7 @@ import Modules.Auth.Mappers.implementation.UserMapper;
 // Models
 import Modules.Auth.Models.Profile;
 import Modules.Auth.Models.User;
+import Modules.Core.Models.Row;
 
 // Interfaces
 import Modules.Auth.Repositories.interfaces.IUserRepository;
@@ -62,8 +63,8 @@ public class UserRepository implements IUserRepository {
     @Override
     public Optional<User> getById(IdVO id) throws CustomException {
         try {
-            List<Object> o = this.ctx.executeQuery("SP_User_Get_ById");
-            return Optional.of(o.isEmpty() ? null : this.userMapper.rowToUser(o.getFirst()));
+            List<Row> rows = this.ctx.executeQuery("SP_User_Get_ById");
+            return Optional.of(rows.isEmpty() ? null : this.userMapper.rowToUser(rows.getFirst()));
         } catch (Exception ex) {
             if (ex instanceof CustomException) throw ex;
             else throw new CustomException(
@@ -79,9 +80,9 @@ public class UserRepository implements IUserRepository {
     @Override
     public List<User> getAll(Optional<Boolean> deleted) throws CustomException {
         try {
-            List<Object> o = this.ctx.executeQuery("SP_User_Get_All");
+            List<Row> rows = this.ctx.executeQuery("SP_User_Get_All");
             List<User> users = List.of();
-            for (Object user : o) {
+            for (Row user : rows) {
                 users.add(this.userMapper.rowToUser(user));
             }
             return users;

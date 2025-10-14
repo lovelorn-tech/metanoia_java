@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import Modules.Core.Models.CustomException;
+import Modules.Core.Models.Row;
 
 public class DBContext implements IDBContext {
     private static Optional<DBContext> ctx = Optional.of(null);
@@ -48,17 +49,18 @@ public class DBContext implements IDBContext {
     }
 
     @Override
-    public List<Object> executeQuery(String SP) throws CustomException {
+    public List<Row> executeQuery(final String SP) throws CustomException {
         try {
             this.open();
             Connection con = this.conn.get();
             Statement stm = con.createStatement();
             ResultSet rs = stm.executeQuery(SP);
-            List<Object> o = List.of();
+            List<Row> rows = List.of();
             while (rs.next()) {
-                
+                Row row = new Row(rs);
+                rows.add(row);
             }
-            return o;
+            return rows;
         } catch (SQLException ex) {
             throw new CustomException(
                     500,
