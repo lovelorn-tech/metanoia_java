@@ -51,10 +51,10 @@ public class DBContext implements IDBContext {
         }
     }
 
-    private <T> void loadSqlParameters(CallableStatement cs, final List<SqlParameter<T>> params)
+    private <T> void loadSqlParameters(CallableStatement cs, final List<SqlParameter<? extends Object>> params)
             throws CustomException {
         try {
-            for (SqlParameter<T> param : params) {
+            for (SqlParameter<? extends Object> param : params) {
                 switch (param.getValue()) {
                     case Integer _:
                     case int _: {
@@ -100,7 +100,7 @@ public class DBContext implements IDBContext {
     }
 
     @Override
-    public <T> List<Row> executeQuery(final String SP, final List<SqlParameter<T>> params) throws CustomException {
+    public List<Row> executeQuery(final String SP, final List<SqlParameter<? extends Object>> params) throws CustomException {
         try {
             this.open();
             Connection con = this.conn.get();
@@ -150,7 +150,7 @@ public class DBContext implements IDBContext {
     }
 
     @Override
-    public <T> void executeCMD(final String SP, final List<SqlParameter<T>> params) throws CustomException {
+    public void executeCMD(final String SP, final List<SqlParameter<? extends Object>> params) throws CustomException {
         try {
             this.open();
             Connection con = this.conn.get();

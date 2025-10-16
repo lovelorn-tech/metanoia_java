@@ -7,6 +7,6 @@ import Modules.Core.Models.Row;
 import Modules.Core.Models.SqlParameter;
 
 public interface IDBContext {
-    public <T> List<Row> executeQuery(final String SP, final List<SqlParameter<T>> params) throws CustomException;
-    public <T> void executeCMD(final String SP, final List<SqlParameter<T>> params) throws CustomException;
+    public List<Row> executeQuery(final String SP, final List<SqlParameter<? extends Object>> params) throws CustomException;
+    public void executeCMD(final String SP, final List<SqlParameter<? extends Object>> params) throws CustomException;
 }

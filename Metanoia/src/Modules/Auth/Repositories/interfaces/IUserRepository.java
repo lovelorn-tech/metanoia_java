@@ -16,7 +16,7 @@ import Modules.Core.Models.CustomException;
 import Modules.Core.Repositories.interfaces.IGenericRepository;
 
 public interface IUserRepository extends IGenericRepository<User> {
-    Optional<User> getByCredentials(UserUsernameVO username, UserPasswordVO password) throws CustomException;
-    Optional<User> getByUsernameOrEmail(UserUsernameVO username, UserEmailVO email) throws CustomException;
+    Optional<User> getByUsername(UserUsernameVO username) throws CustomException;
+    List<User> getByUsernameOrEmail(UserUsernameVO username, UserEmailVO email) throws CustomException;
     List<User> getByProfile(Profile profile) throws CustomException;
 }
