@@ -1,6 +1,5 @@
 package Modules.Auth.Repositories.implementation;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +12,7 @@ import Modules.Auth.Models.Profile;
 import Modules.Auth.Models.User;
 import Modules.Core.Models.Row;
 import Modules.Core.Models.SqlParameter;
+
 // Interfaces
 import Modules.Auth.Repositories.interfaces.IUserRepository;
 import Modules.Core.Repositories.contexts.IDBContext;
@@ -69,7 +69,7 @@ public class UserRepository implements IUserRepository {
             SqlParameter<String> paramId = new SqlParameter<String>("id", id.getValue());
             List<SqlParameter<? extends Object>> params = List.of();
             params.add(paramId);
-            List<Row> rows = this.ctx.executeQuery("SP_User_Get_ById(?)", params);
+            List<Row> rows = this.ctx.executeQuery("SP_User_Get_ById(:" + paramId.getName() + ")", params);
             return Optional.of(rows.isEmpty() ? null : this.userMapper.rowToUser(rows.getFirst()));
         } catch (Exception ex) {
             if (ex instanceof CustomException)
@@ -90,11 +90,13 @@ public class UserRepository implements IUserRepository {
             List<SqlParameter<? extends Object>> params = List.of();
             SqlParameter<Boolean> paramDeleted = new SqlParameter<Boolean>("deleted", deleted.orElseGet(null));
             params.add(paramDeleted);
-            List<Row> rows = this.ctx.executeQuery("SP_User_Get_All(?)", params);
+
+            List<Row> rows = this.ctx.executeQuery("SP_User_Get_All(:" + paramDeleted.getName() + ")", params);
             List<User> users = List.of();
             for (Row user : rows) {
                 users.add(this.userMapper.rowToUser(user));
             }
+
             return users;
         } catch (Exception ex) {
             if (ex instanceof CustomException)
@@ -115,7 +117,7 @@ public class UserRepository implements IUserRepository {
             SqlParameter<String> paramUsername = new SqlParameter<String>("username", username.getValue());
             List<SqlParameter<? extends Object>> params = List.of();
             params.add(paramUsername);
-            List<Row> rows = ctx.executeQuery("SP_User_Get_ByUsername(?)", params);
+            List<Row> rows = ctx.executeQuery("SP_User_Get_ByUsername(:" + paramUsername.getName() + ")", params);
             return Optional.of(rows.isEmpty() ? null : this.userMapper.rowToUser(rows.getFirst()));
         } catch (Exception ex) {
             if (ex instanceof CustomException)
@@ -139,8 +141,8 @@ public class UserRepository implements IUserRepository {
             List<SqlParameter<? extends Object>> params = List.of();
             params.addAll(Arrays.asList(paramUsername, paramEmail));
 
+            List<Row> rows = ctx.executeQuery("SP_User_Get_ByUsernameOrEmail(:" + paramUsername.getName() + ", :" + paramEmail.getName() + ")", params);
             List<User> users = List.of();
-            List<Row> rows = ctx.executeQuery("SP_User_Get_ByUsernameOrEmail(?, ?)", params);
             for (Row row : rows) {
                 users.add(userMapper.rowToUser(row));
             }
@@ -168,7 +170,7 @@ public class UserRepository implements IUserRepository {
             params.addAll(Arrays.asList(paramProfileId));
 
             List<User> users = List.of();
-            List<Row> rows = ctx.executeQuery("SP_User_Get_ByProfile(?)", params);
+            List<Row> rows = ctx.executeQuery("SP_User_Get_ByProfile(:" + paramProfileId.getName() + ")", params);
             for (Row row : rows) {
                 users.add(userMapper.rowToUser(row));
             }
